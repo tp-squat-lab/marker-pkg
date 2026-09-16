@@ -1,0 +1,29 @@
+name: publish
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to publish
+        required: true
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install latest npm
+        run: npm install -g npm@latest
+      - name: Dump OIDC claims
+        run: |
+          TOK=$(curl -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=npm:registry.npmjs.org" | jq -r .value)
+          node -e "const t=process.argv[1];const p=t.split('.')[1];console.log(JSON.stringify(JSON.parse(Buffer.from(p,'base64url').toString()),null,2))" "$TOK"
+      - name: Publish
+        run: |
+          npm version "${{ github.event.inputs.version }}" --no-git-tag-version --allow-same-version
+          npm stage publish
