@@ -1,0 +1,8 @@
+{
+  "name": "tp-squat-marker-gdj50",
+  "version": "0.0.1",
+  "description": "SECURITY RESEARCH TEST PACKAGE - npm trusted-publishing rename-squat validation. Do not install.",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/tp-squat-lab/marker-pkg" },
+  "publishConfig": { "access": "public" }
+}
